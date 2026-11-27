@@ -55,7 +55,7 @@ jobs:
           ]
 
           def fetch(url, referer):
-              headers = {'User-Agent': 'Mozilla/5.0 (compatible; DEAI public reader/1.0)', 'Referer': referer}
+              headers = {'User-Agent': 'Mozilla/5.0 (compatible; DEAI private rehearsal/1.0)', 'Referer': referer}
               with urlopen(Request(url, headers=headers), timeout=20) as response:
                   data = response.read(16_000_001)
                   if not response.geturl().startswith('https://') or len(data) > 16_000_000:
@@ -81,7 +81,17 @@ jobs:
                   metadata = story['image']
                   source = origin + '/' + metadata['large']
               path = f'media/nov27-{index:02}.webp'
-              with Image.open(io.BytesIO(fetch(source, story['url'] if asset else origin))) as image:
+              referer = story['url'] if asset else origin
+              steam_app = re.search(r'/steam/apps/(d+)/', source)
+              if steam_app:
+                  referer = 'https://store.steampowered.com/app/' + steam_app[1] + '/'
+              if index == 19:
+                  referer = 'https://www.moviechart.co.kr/info/movieinfo/photo/20257275?idx=126430'
+              try:
+                  content = fetch(source, referer)
+              except Exception as error:
+                  raise RuntimeError(f'Image {index} could not be read at {source}: {error}') from error
+              with Image.open(io.BytesIO(content)) as image:
                   image = ImageOps.exif_transpose(image)
                   image.thumbnail((1150, 800))
                   image.save(output / path, 'WEBP', quality=86, method=4)
