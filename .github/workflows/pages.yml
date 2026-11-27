@@ -1,0 +1,148 @@
+name: Publish the illustrated November 27 DEAI issue
+on: [push, workflow_dispatch]
+permissions:
+  contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow==12.2.0'
+      - name: Build the reader from the public issue and its image sources
+        run: |
+          python - <<'PY'
+          import hashlib
+          import io
+          import json
+          import re
+          from concurrent.futures import ThreadPoolExecutor
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from PIL import Image, ImageOps
+
+          origin = 'https://deai-4945ab4a30cd1148f59a772a.briskbox23.chatgpt.site'
+          assets = [
+              ('PlayStation.Blog', 'https://blog.playstation.com/tachyon/2026/11/fd8023623ccb61c2b195870ea714209ebf52e951.jpg'),
+              ('Xbox Wire / Koei Tecmo', 'https://xboxwire.thesourcemediaassets.com/sites/2/2026/11/Nioh-3-Key-Art-Logo-1f9702a7ae1d63984be4.jpg'),
+              ('PlayStation.Blog', 'https://blog.playstation.com/tachyon/2026/11/bc4af3b9af7eabe20204f2228edee81050b007ef.jpg'),
+              ('NVIDIA', 'https://developer-blogs.nvidia.com/wp-content/uploads/2026/11/Featured-War-Thunder-DLSS-5-on.webp'),
+              None,
+              None,
+              ('DigitalMarsh / Steam', 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/5548360/bbf19c2fa0e5f26f125b016079c110cbf0bf6be1/capsule_616x353.jpg?t=1795692222'),
+              ('Where Winds Meet', 'https://yysls-build-na.fp.ps.easebar.com/file/69118e9af5a2b7775166e5c6e0Q84oZo03'),
+              ('Sand.ai', 'https://static.magi.world/media/website/6c8334773b98eca3de5b02c0460740cef8802c111e173bd32de5a1f1f4d3d884.webp'),
+              None,
+              None,
+              ('Alibaba Cloud', 'https://img.alicdn.com/imgextra/i1/O1CN012QgtoH1c1Mu70xD3w_!!6000000003540-2-tps-640-640.png'),
+              None,
+              ('Monster Couch / Steam', 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3339080/52a32c6809f6aa0c09db260c8a01f92e02f8137f/capsule_616x353.jpg?t=1789635022'),
+              ('Longplay Studios / Steam', 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4416390/bbe14fc63d1bd5324e6d18445a39e108b6e81f97/capsule_616x353.jpg?t=1795700972'),
+              ('Glitch Factory / Steam', 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3015820/1aa74007785bbd9e2dc8bc6c434b98c8d8837c10/capsule_616x353.jpg?t=1795541357'),
+              ('RedBoon / Steam', 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/5590100/93c8ba4761489a22807e52fdeb0b5cac13b75c2f/capsule_616x353.jpg?t=1794818774'),
+              ('Athelan Games / Steam', 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3572070/af86ed5b28e439a6069be97351a5ce07c4fb64e9/capsule_616x353.jpg?t=1795630942'),
+              ('MovieChart', 'https://www.moviechart.co.kr/thumb?width=178&height=267&m_code=20257275&source=https://admin.moviechart.co.kr/assets/upload/movie/261113003508_7157.jpg'),
+              ('Walt Disney Animation Studios', 'https://lumiere-a.akamaihd.net/v1/images/p_disneymovies_hexed_v2_fd40921f.jpeg?region=0%2C0%2C540%2C810'),
+              ('Sunrise', 'https://www.votoms-gh.com/assets/img/ogp_1023.png'),
+              ('IDFA', 'https://optimise2.assets-servd.host/idfa-cms/production/uploads/Photos/news/WnW_1.jpg?w=2560&fm=jpeg&auto=compress&fit=crop&dm=1795164952&s=33a1949550c233d09de4c941fc2f60b3'),
+              ('Tallinn Black Nights Film Festival', 'https://assets.poff.ee/img/F_2_On_Top_of_the_Cliff_8eddf08ca0_big_16_9.jpeg'),
+              None,
+          ]
+
+          def fetch(url, referer):
+              headers = {'User-Agent': 'Mozilla/5.0 (compatible; DEAI public reader/1.0)', 'Referer': referer}
+              with urlopen(Request(url, headers=headers), timeout=20) as response:
+                  data = response.read(16_000_001)
+                  if not response.geturl().startswith('https://') or len(data) > 16_000_000:
+                      raise ValueError('Unexpected response: ' + url)
+                  return data
+
+          output = Path('dist')
+          (output / 'media').mkdir(parents=True)
+          html = fetch(origin + '/i-64b0c73f5e515dc55f250158', origin).decode()
+          embedded = re.search(r'<script type="application/json" id="test-edition-data">(.*?)</script>', html, re.S)
+          edition = json.loads(embedded[1])
+          raw = json.dumps(edition, sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode()
+          assert hashlib.sha256(raw).hexdigest() == 'e12047f3d32453d2a6d2d9a6b92798d13f5a0c30fae4eaf85468fa503a4d1803'
+          assert edition['issue'] == '2026-11-27' and edition['status'] == 'approved' and len(edition['items']) == 24
+          assert 'noindex' in html
+
+          def prepare(job):
+              index, (story, asset) = job
+              if asset:
+                  credit, source = asset
+                  metadata = {'alt': story['title'] + ' 관련 이미지', 'altEn': 'Artwork for ' + story['titleEn'], 'credit': credit}
+              else:
+                  metadata = story['image']
+                  source = origin + '/' + metadata['large']
+              path = f'media/nov27-{index:02}.webp'
+              with Image.open(io.BytesIO(fetch(source, story['url'] if asset else origin))) as image:
+                  image = ImageOps.exif_transpose(image)
+                  image.thumbnail((1150, 800))
+                  image.save(output / path, 'WEBP', quality=86, method=4)
+              story['image'] = {**metadata, 'small': path, 'large': path}
+              return {'title': story['titleEn'], 'credit': metadata['credit'], 'url': source}
+
+          with ThreadPoolExecutor(max_workers=12) as pool:
+              sources = list(pool.map(prepare, enumerate(zip(edition['items'], assets, strict=True), 1)))
+          payload = json.dumps(edition, ensure_ascii=False, separators=(',', ':')).replace('<', '\u003c')
+          (output / 'index.html').write_text(html[:embedded.start(1)] + payload + html[embedded.end(1):], encoding='utf-8')
+          for filename in ('app.js', 'reader-layout.css', 'reader-motion.css'):
+              (output / filename).write_bytes(fetch(origin + '/' + filename, origin))
+          (output / 'image-sources.json').write_text(json.dumps(sources, ensure_ascii=False, indent=2), encoding='utf-8')
+          print('Prepared 24 approved articles and 24 images.')
+          PY
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium
+      - name: Check all article images and reader controls
+        run: |
+          node <<'JS'
+          const { chromium } = require('playwright');
+          const { pathToFileURL } = require('node:url');
+          const assert = require('node:assert/strict');
+          (async () => {
+            const browser = await chromium.launch();
+            try {
+              const page = await browser.newPage();
+              const errors = [];
+              page.on('pageerror', error => errors.push(error.message));
+              await page.goto(pathToFileURL(process.cwd() + '/dist/index.html').href);
+              await page.locator('#stories img').first().waitFor();
+              const images = await page.locator('#stories').evaluate(async list => {
+                const imgs = [...list.querySelectorAll('img')];
+                imgs.forEach(img => { img.loading = 'eager'; });
+                await Promise.all(imgs.map(img => img.decode()));
+                return imgs.length;
+              });
+              assert.equal(images, 24);
+              await page.locator('#theme').press('Space');
+              await page.locator('#lang').click();
+              await page.locator('#search').fill('Wyrmspan');
+              assert.equal(await page.locator('#stories img').count(), 1);
+              await page.locator('#stories').getByRole('button', {name: /Wyrmspan/}).first().click();
+              assert.deepEqual(errors, []);
+              console.log('24 images, theme, language, search and details verified.');
+            } finally {
+              await browser.close();
+            }
+          })().catch(error => { console.error(error); process.exitCode = 1; });
+          JS
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/deploy-pages@v4
