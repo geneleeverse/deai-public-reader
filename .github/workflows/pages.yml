@@ -2,6 +2,7 @@ name: Publish the illustrated November 27 DEAI issue
 on: [push, workflow_dispatch]
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -18,6 +19,7 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install 'Pillow==12.2.0'
       - name: Build the reader from the public issue and its image sources
+        if: ${{ !(github.event_name == 'push' && github.event.head_commit.message == 'Publish only the approved DEAI rehearsal') }}
         run: |
           python - <<'PY'
           import hashlib
@@ -147,6 +149,23 @@ jobs:
           (saturday / 'index.html').write_text(saturday_html, encoding='utf-8')
           print('Prepared the distinct November 28 reader with 26 stories and 26 images.')
           PY
+      - name: Retrieve the existing verified Pages artifact
+        if: ${{ github.event_name == 'push' && github.event.head_commit.message == 'Publish only the approved DEAI rehearsal' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: baseline
+          run-id: '45944807766'
+          github-token: ${{ github.token }}
+      - name: Restore the published site byte for byte
+        if: ${{ github.event_name == 'push' && github.event.head_commit.message == 'Publish only the approved DEAI rehearsal' }}
+        run: |
+          mkdir dist
+          tar --no-same-owner -xf baseline/artifact.tar -C dist
+          test -f dist/index.html
+          test -f dist/2026-11-28/index.html
+      - name: Add the approved six-article rehearsal
+        run: python editorial-rehearsal/build.py
       - run: npm install --no-save playwright
       - run: npx playwright install chromium
       - name: Check all article images and reader controls
@@ -189,6 +208,16 @@ jobs:
               assert.equal(saturday.stories, 26);
               assert.deepEqual(errors, []);
               console.log('November 28 reader verified: 26 articles, 26 loaded images.');
+              await page.goto(pathToFileURL(process.cwd() + '/dist/rehearsal-2026-11-27/index.html').href);
+              await page.locator('#stories img').first().waitFor();
+              const rehearsal = await page.locator('#stories img').evaluateAll(async images => {
+                images.forEach(img => { img.loading = 'eager'; });
+                await Promise.all(images.map(img => img.decode()));
+                return images.length;
+              });
+              assert.equal(rehearsal, 6);
+              assert.deepEqual(errors, []);
+              console.log('Rehearsal reader tested: 6 articles, 6 decoded images.');
             } finally {
               await browser.close();
             }

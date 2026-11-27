@@ -1,0 +1,126 @@
+{
+  "issue": "2026-11-27",
+  "status": "approved",
+  "items": [
+    {
+      "category": "생성형 AI",
+      "date": "2026-11-26",
+      "source": "Levent Alpöge / Lean FRO / Andrew Sutherland",
+      "title": "클로드와 함께 찾은 리만 가설 증명, 독립 검증 통과",
+      "titleEn": "Independent checkers accept Riemann hypothesis proof found with Claude",
+      "summary": "수학자 레벤트 알푀게는 클로드와 함께 찾은 리만 가설 증명을 11월 20일 Lean 코드로 공개했다. Lean FRO와 Mathlib Initiative는 21일 증명 코드와 그 코드가 다루는 명제가 맞는지 확인했다고 밝혔다. 25일에는 같은 다섯 정리를 다루는 더 짧은 코드가 공개됐고, MIT의 앤드루 서덜랜드는 26일까지 여러 독립 검증기로 이를 확인한 결과를 공개했다.",
+      "summaryEn": "Mathematician Levent Alpöge released a Lean formalization of a Riemann hypothesis proof he found with Claude on November 20. On November 21, Lean FRO and the Mathlib Initiative reported verifying the formal proof and checking that it established the intended statement. A shorter formalization of the same five theorems appeared on November 25, and MIT mathematician Andrew Sutherland reported checks with several independent verifiers through November 26.",
+      "url": "https://math.mit.edu/~drew/shortgrh/",
+      "score": 99,
+      "status": "approved",
+      "summaryOrigin": "ai_assisted",
+      "image": {
+        "small": "media/zeta-critical-line.webp",
+        "large": "media/zeta-critical-line.webp",
+        "alt": "복소평면에서 실수부 ½인 직선과 리만 제타 함수의 처음 세 비자명한 영점을 표시한 도표",
+        "altEn": "Plot of the critical line at real part ½ and the first three nontrivial zeta zeros",
+        "credit": "DE∀I · NIST DLMF §25.10"
+      }
+    },
+    {
+      "category": "Unreal",
+      "date": "2026-11-24",
+      "source": "NVIDIA",
+      "title": "언리얼 5.9 프리뷰의 시퀀서에 Kimodo 연동",
+      "titleEn": "Unreal 5.9 Preview integrates Kimodo into Sequencer",
+      "summary": "엔비디아의 Kimodo가 언리얼 엔진 5.9 프리뷰의 가이드 기반 애니메이션 시스템에 첫 모델로 들어갔다. 시퀀서에서 문장으로 움직임을 지정하고, 스플라인으로 이동 경로를 정하거나 특정 프레임에 목표 자세를 줄 수 있다.",
+      "summaryEn": "NVIDIA’s Kimodo became the first model integrated into Unreal Engine 5.9 Preview’s guided animation system. Sequencer can guide the generated motion with a description, a spline path or poses at particular frames.",
+      "url": "https://developer.nvidia.com/blog/whats-new-for-game-developers-ai-animation-and-rtx-tools/#guided_animation",
+      "score": 96,
+      "status": "approved",
+      "summaryOrigin": "ai_assisted",
+      "image": {
+        "alt": "NVIDIA Kimodo 공식 데모의 동작 제어 화면",
+        "altEn": "Controls in NVIDIA’s official Kimodo demo",
+        "credit": "NVIDIA · Kimodo project · Apache-2.0",
+        "large": "media/official-2026-11-27-kimodo-large.webp",
+        "small": "media/official-2026-11-27-kimodo-small.webp"
+      }
+    },
+    {
+      "category": "기타 게임 엔진",
+      "date": "2026-11-24",
+      "source": "Godot Engine",
+      "title": "Godot 4.8, 릴리스 후보 전 추가 베타 배포",
+      "titleEn": "Godot 4.8 gets another beta before its release candidate",
+      "summary": "Godot 프로젝트는 4.8 출시를 막던 남은 문제를 해결했다고 밝혔다. 릴리스 후보로 넘어가기 전에 베타 5를 내고 수정 사항을 공개 환경에서 한 차례 더 시험한다.",
+      "summaryEn": "The Godot project reported that the remaining 4.8 release blockers had been resolved. Beta 5 gives those fixes another round of public testing before the release candidate.",
+      "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-5/",
+      "score": 95,
+      "status": "approved",
+      "summaryOrigin": "ai_assisted",
+      "image": {
+        "alt": "고도 엔진 공식 로고",
+        "altEn": "Official Godot Engine logo",
+        "credit": "Godot Engine contributors · CC BY 4.0",
+        "large": "media/official-2026-11-27-godot-large.webp",
+        "small": "media/official-2026-11-27-godot-small.webp"
+      }
+    },
+    {
+      "category": "AI 개발 도구",
+      "date": "2026-11-23",
+      "source": "AutoClaw",
+      "title": "AutoClaw, GLM-5.4를 코딩 요금제에 통합",
+      "titleEn": "AutoClaw integrates GLM-5.4 into its coding plans",
+      "summary": "AutoClaw에서 Z.ai의 GLM-5.4를 GLM Coding Plan으로 사용할 수 있게 됐다. 공식 공지는 V2, V3, Team Edition을 지원 대상으로 들고 GLM-5.4 이용에 1.5배 쿼터 조건을 명시했다.",
+      "summaryEn": "AutoClaw made Z.ai’s GLM-5.4 available through the GLM Coding Plan. Its announcement names V2, V3 and Team Edition and specifies a 1.5× quota condition for GLM-5.4 usage.",
+      "url": "https://autoclaw.z.ai/en/blog/model/GLM-5.4/",
+      "score": 90,
+      "status": "approved",
+      "summaryOrigin": "ai_assisted",
+      "image": {
+        "alt": "Z.ai 로고",
+        "altEn": "Z.ai logo",
+        "credit": "Z.ai · Wikimedia Commons",
+        "large": "media/official-2026-11-27-zai-large.webp",
+        "small": "media/official-2026-11-27-zai-small.webp"
+      }
+    },
+    {
+      "category": "게임 산업",
+      "date": "2026-11-24",
+      "source": "Silver Lining Interactive / Kniv Studio",
+      "title": "한국산 《스타더스트》, PS5·스위치 2 출시일 확정",
+      "titleEn": "Korean RPG Stardust sets its PS5 and Switch 2 date",
+      "summary": "실버 라이닝 인터랙티브와 크니브스튜디오는 턴제 전략 RPG 《STARDUST: Wish of Witch》의 콘솔 디지털판이 12월 14일 나온다고 밝혔다. 대상은 PS5와 닌텐도 스위치 2이며, 두 플랫폼 패키지판은 별도로 예약을 받고 있다.",
+      "summaryEn": "Silver Lining Interactive and Kniv Studio announced that the digital console edition of turn-based strategy RPG STARDUST: Wish of Witch is coming December 14. It will launch on PS5 and Nintendo Switch 2, with physical editions available to preorder separately.",
+      "url": "https://www.gamespress.com/ko-KR/When-Stars-Align---STARDUST-Wish-of-Witch-Confirmed-to-Launch-on-Conso",
+      "score": 88,
+      "status": "approved",
+      "summaryOrigin": "ai_assisted",
+      "image": {
+        "alt": "《STARDUST: Wish of Witch》 PS5와 스위치 2 패키지 보도 이미지",
+        "altEn": "Publisher press artwork for the boxed PS5 and Switch 2 editions of STARDUST: Wish of Witch",
+        "credit": "Silver Lining Interactive · Kniv Studio",
+        "large": "media/official-2026-11-27-stardust-large.webp",
+        "small": "media/official-2026-11-27-stardust-small.webp"
+      }
+    },
+    {
+      "category": "그래픽스",
+      "date": "2026-11-24",
+      "source": "Knights Peak / Windup Games",
+      "title": "《Hela》의 협동 플레이 영상에 등장한 숲과 물길",
+      "titleEn": "Hela showcases co-op traversal through forests and waterways",
+      "summary": "배급사와 제작진은 작은 생쥐가 숲과 습지를 탐험하는 새 게임플레이 영상을 공개했다. 마법 배낭으로 가지를 건너거나 뗏목을 타고 협동 이동과 경주를 하는 모습이 담겼다.",
+      "summaryEn": "The publisher and developer released gameplay showing a tiny mouse exploring forests and wetlands. It demonstrates using an enchanted backpack to cross branches and using rafts for co-op travel and racing.",
+      "url": "https://www.gamespress.com/en-US/Make-the-world-your-Playground-New-Deep-Dive-reveals-the-joy-of-play-i",
+      "score": 77,
+      "status": "approved",
+      "summaryOrigin": "ai_assisted",
+      "image": {
+        "alt": "《Hela: of Mice & Magic》 배급사 보도 이미지",
+        "altEn": "Publisher press image for Hela: of Mice & Magic",
+        "credit": "Knights Peak · Windup Games",
+        "large": "media/official-2026-11-27-hela-large.webp",
+        "small": "media/official-2026-11-27-hela-small.webp"
+      }
+    }
+  ]
+}
